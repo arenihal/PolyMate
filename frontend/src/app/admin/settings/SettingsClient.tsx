@@ -1,4 +1,8 @@
-"use client";
+﻿"use client";
+
+import DashboardBackLink from "next/link";
+import { ArrowLeft as DashboardBackArrow } from "lucide-react";
+
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
@@ -482,6 +486,14 @@ export default function SettingsClient() {
     <div className="min-h-dvh bg-slate-50 px-4 py-8 text-slate-900 dark:bg-slate-950 dark:text-slate-100 sm:px-8">
 
       <div className="mx-auto max-w-3xl space-y-5">
+
+        <DashboardBackLink
+          href="/admin/dashboard"
+          className="inline-flex items-center gap-2 text-sm font-medium text-blue-600"
+        >
+          <DashboardBackArrow size={17} />
+          Back to Dashboard
+        </DashboardBackLink>
 
         <header>
           <h1 className="text-3xl font-bold tracking-tight">
@@ -1031,4 +1043,5 @@ export default function SettingsClient() {
     </div>
   );
 }
+
 
