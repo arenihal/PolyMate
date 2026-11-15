@@ -269,7 +269,7 @@ export default function AdminOverview({
             </h2>
 
             <p className="mt-2 max-w-xl text-sm leading-6 text-blue-100">
-              Monitor your academic community,
+              Monitor your academic platform,
               manage resources and maintain a
               reliable learning platform.
             </p>

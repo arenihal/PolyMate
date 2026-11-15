@@ -65,25 +65,16 @@ const sections = [
     ],
   },
   {
-    title: "7. Community and Academic Support",
+    title: "7. Account Communications",
     content: [
-      "PolyMate Community allows students to submit academic material requests, feedback, technical issues and support requests.",
-      "Users must communicate respectfully and provide relevant information when submitting requests or messages.",
-      "PolyMate aims to respond to requests within a reasonable period, but does not guarantee that every request will be fulfilled or resolved within a specific time.",
-      "Community conversations are intended for the requesting student and authorized administrators, subject to the Privacy Policy.",
-    ],
-  },
-  {
-    title: "8. Notifications and Email Services",
-    content: [
-      "PolyMate may provide in-app notifications and service-related email notifications concerning account activity, Community requests and administrative updates.",
-      "Official administrative notifications may be sent through the authorized PolyMate Gmail account using the Google Gmail API.",
+      "PolyMate uses Firebase Authentication to provide email verification and password recovery.",
+      "Users are responsible for maintaining access to their registered email address.",
       "Email delivery depends on external service availability and is not guaranteed to be immediate.",
-      "Users should refer to the platform dashboard for the latest account information and request status.",
+      "Users should refer to their dashboard for the latest account information and administrative updates.",
     ],
   },
   {
-    title: "9. Third-Party Services",
+    title: "8. Third-Party Services",
     content: [
       "PolyMate uses third-party services, including Firebase Authentication, Supabase, Vercel, Render and Google APIs, to provide platform functionality.",
       "Use of these services may also be subject to their respective terms, policies and service limitations.",
@@ -91,7 +82,7 @@ const sections = [
     ],
   },
   {
-    title: "10. Service Availability",
+    title: "9. Service Availability",
     content: [
       "PolyMate aims to provide a reliable educational service. However, temporary interruptions may occur due to maintenance, technical issues, hosting limitations or circumstances outside our control.",
       "Features and available materials may be updated, modified or discontinued when necessary.",
@@ -99,7 +90,7 @@ const sections = [
     ],
   },
   {
-    title: "11. Account Suspension and Termination",
+    title: "10. Account Suspension and Termination",
     content: [
       "PolyMate may restrict or suspend accounts that violate these terms, misuse platform resources or create security risks.",
       "Users may contact PolyMate to request account closure or review of an account restriction.",
@@ -107,7 +98,7 @@ const sections = [
     ],
   },
   {
-    title: "12. Educational Disclaimer",
+    title: "11. Educational Disclaimer",
     content: [
       "PolyMate provides educational resources for learning and academic reference.",
       "While we aim to support accurate and useful content, we do not guarantee that all materials are complete, current or free from errors.",
@@ -116,14 +107,14 @@ const sections = [
     ],
   },
   {
-    title: "13. Privacy and Data Protection",
+    title: "12. Privacy and Data Protection",
     content: [
       "PolyMate handles personal information as described in its Privacy Policy.",
       "Users should review the Privacy Policy to understand how account information, authentication data, educational activity and support information are processed.",
     ],
   },
   {
-    title: "14. Changes to These Terms",
+    title: "13. Changes to These Terms",
     content: [
       "These Terms of Service may be updated to reflect changes in platform features, security practices or applicable requirements.",
       "The latest version will be available on this page. Material changes may be communicated through the platform where appropriate.",

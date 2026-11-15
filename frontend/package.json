@@ -11,6 +11,7 @@
     "production": "npm run build && npm run serve"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "axios": "^1.21.0",
     "firebase": "13.3.0",
     "lucide-react": "^1.70.0",

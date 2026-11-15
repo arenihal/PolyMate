@@ -25,7 +25,7 @@ const sections = [
     content: [
       "Account information may include your name, email address, institution and account role, such as student or faculty.",
       "Faculty members may provide academic details and upload educational PDF materials.",
-      "We also process bookmarks, Community requests, support messages and related activity necessary to provide platform features.",
+      "We also process bookmarks and related academic activity necessary to provide platform features.",
     ],
   },
   {
@@ -39,17 +39,16 @@ const sections = [
   {
     title: "4. How We Use Your Information",
     content: [
-      "We use your information to authenticate your account, provide educational materials, manage faculty uploads, respond to Community requests and maintain platform security.",
-      "Information may also be used to deliver relevant service notifications, improve reliability and investigate technical or security issues.",
+      "We use your information to authenticate your account, provide educational materials, manage faculty uploads and maintain platform security.",
+      "Information may also be used to improve platform reliability and investigate technical or security issues.",
       "PolyMate does not sell personal information.",
     ],
   },
   {
-    title: "5. Google Gmail API and Email Notifications",
+    title: "5. Account Communications",
     content: [
-      "PolyMate uses the Google Gmail API to send official administrative notifications and service test emails through its authorized official Gmail account.",
-      "The Gmail sending permission is used to send platform-related notifications. PolyMate does not use this permission to read, search or delete Gmail inbox messages.",
-      "Official Community notifications contain limited request information and a reference to the secure administrator dashboard. Student passwords and private support conversations are not included in these notifications.",
+      "PolyMate uses Firebase Authentication for email verification and password recovery.",
+      "Users may contact PolyMate through its official email address for account assistance, privacy concerns and other platform-related enquiries.",
       "PolyMate's use and transfer of information received from Google APIs to any other app will adhere to the Google API Services User Data Policy, including the Limited Use requirements.",
     ],
   },
@@ -65,7 +64,6 @@ const sections = [
     title: "7. Data Sharing and Access",
     content: [
       "Information is accessible to authorized users and administrators according to their responsibilities and platform permissions.",
-      "Community requests and support conversations are intended for the requesting student and authorized administrators.",
       "We may disclose information when required by applicable law or when reasonably necessary to protect the security and integrity of the platform.",
     ],
   },
@@ -80,7 +78,7 @@ const sections = [
   {
     title: "9. Data Retention and Deletion",
     content: [
-      "Information is retained as needed to operate accounts, provide educational services, resolve support requests and maintain platform security.",
+      "Information is retained as needed to operate accounts, provide educational services, respond to account enquiries and maintain platform security.",
       "Users may contact PolyMate to request access, correction or deletion of their personal information.",
       "Deletion requests will be reviewed subject to applicable legal, security and operational requirements.",
     ],

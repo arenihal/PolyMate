@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {
   createContext,
@@ -12,6 +12,7 @@ import {
 
 import { usePathname } from "next/navigation";
 import { getAuthTheme } from "@/lib/auth-theme";
+import { supabaseRealtime } from "@/lib/supabase-realtime";
 
 type Theme = "light" | "dark";
 
@@ -128,23 +129,61 @@ export function ThemeProvider({
 
     const controller = new AbortController();
 
+    let requestVersion = 0;
+
     async function refreshTheme() {
+      const version = ++requestVersion;
+
       try {
         const value = await getAuthTheme(
           controller.signal
         );
 
-        if (!controller.signal.aborted) {
+        if (
+          !controller.signal.aborted &&
+          version === requestVersion
+        ) {
           setAuthTheme(value);
         }
       } catch {
-        // Keep the last known theme if the API is unavailable.
+        // Keep the last known theme during network failures.
       }
     }
 
     void refreshTheme();
 
+    const channel = supabaseRealtime
+      ?.channel("polymate-auth-theme")
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "system_settings",
+          filter: "key=eq.authentication_theme",
+        },
+        () => {
+          void refreshTheme();
+        }
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") {
+          void refreshTheme();
+        }
+      });
+
     window.addEventListener("focus", refreshTheme);
+
+    function handleVisibility() {
+      if (document.visibilityState === "visible") {
+        void refreshTheme();
+      }
+    }
+
+    document.addEventListener(
+      "visibilitychange",
+      handleVisibility
+    );
 
     const interval = window.setInterval(
       refreshTheme,
@@ -159,7 +198,16 @@ export function ThemeProvider({
         refreshTheme
       );
 
+      document.removeEventListener(
+        "visibilitychange",
+        handleVisibility
+      );
+
       window.clearInterval(interval);
+
+      if (channel && supabaseRealtime) {
+        void supabaseRealtime.removeChannel(channel);
+      }
     };
   }, [group, pathname]);
 
@@ -217,5 +265,3 @@ export function useTheme() {
 
   return context;
 }
-
-

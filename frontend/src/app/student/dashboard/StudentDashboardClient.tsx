@@ -1,6 +1,5 @@
 "use client";
 
-import NotificationBell from "@/components/notifications/NotificationBell";
 import { fetchSecurePDF, PDF_API_BASE } from "@/lib/secure-pdf";
 
 import PDFViewer from "@/components/shared/PDFViewerDynamic";
@@ -267,9 +266,6 @@ export default function StudentDashboardPage() {
 
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <ThemeToggle />
-              <div className="hidden md:block">
-                <NotificationBell role="student" viewport="desktop" />
-              </div>
               <Link
               href="/student/profile"
               aria-label="Open My Profile"

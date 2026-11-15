@@ -1,4 +1,4 @@
-﻿from routes.faculty_materials import faculty_materials_bp
+from routes.faculty_materials import faculty_materials_bp
 from routes.student_materials import student_materials_bp
 
 import os
@@ -82,45 +82,15 @@ CORS(app, resources={
 
 @app.get("/api/health")
 def health():
-
-    registered_routes = {
-        rule.rule: rule.methods
-        for rule in app.url_map.iter_rules()
-    }
-
-    unread_summary = (
-        "GET" in registered_routes.get(
-            "/api/admin/community/unread-summary", set()
-        )
-    )
-
-    unread_tickets = (
-        "GET" in registered_routes.get(
-            "/api/admin/community/unread-tickets", set()
-        )
-    )
-
-    mark_read = (
-        "PATCH" in registered_routes.get(
-            "/api/admin/community/requests/<request_id>/read",
-            set()
-        )
-    )
-
     return jsonify({
         "status": "ok",
         "project": "PolyMate",
         "backend": "Python Flask",
         "firebase": "initialized",
-        "version": "phase-6-diagnostic-v1",
+        "version": "community-free-v1",
         "commit": os.getenv(
             "RENDER_GIT_COMMIT", "local"
-        ),
-        "features": {
-            "community_unread_summary": unread_summary,
-            "community_unread_tickets": unread_tickets,
-            "community_mark_read": mark_read
-        }
+        )
     })
 
 app.register_blueprint(firebase_test_bp)
@@ -157,28 +127,16 @@ app.register_blueprint(admin_faculty_bp)
 
 
 
-from routes.student_community import student_community_bp
-app.register_blueprint(student_community_bp)
 
-from routes.admin_community import admin_community_bp
-app.register_blueprint(admin_community_bp)
 
-from routes.community_messages import community_messages_bp
-app.register_blueprint(community_messages_bp)
 
-from routes.admin_email import admin_email_bp
-app.register_blueprint(admin_email_bp)
 
-from routes.community_email_jobs import community_email_jobs_bp
 
-app.register_blueprint(community_email_jobs_bp)
 
 from routes.system_settings import system_settings_bp
 
 app.register_blueprint(system_settings_bp)
 
-from routes.faculty_community import faculty_community_bp
-app.register_blueprint(faculty_community_bp)
 
 from middleware.security import init_security
 

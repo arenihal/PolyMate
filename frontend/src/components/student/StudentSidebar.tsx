@@ -10,14 +10,12 @@ import {
   GraduationCap,
   LayoutDashboard,
   Layers3,
-  MessagesSquare,
   Menu,
   UserRound,
   X,
 } from "lucide-react";
 
 import SignOutButton from "@/components/auth/SignOutButton";
-import NotificationBell from "@/components/notifications/NotificationBell";
 
 const navigation = [
   {
@@ -46,11 +44,6 @@ const navigation = [
     icon: Bookmark,
   },
 
-  {
-    label: "Community Hub",
-    href: "/student/community",
-    icon: MessagesSquare,
-  },
 
   {
     label: "My Profile",
@@ -111,7 +104,6 @@ export default function StudentSidebar() {
           PolyMate
         </Link>
         <div className="flex items-center gap-2">
-          <NotificationBell role="student" viewport="mobile" />
           
 
         <button

@@ -278,7 +278,7 @@ export default function RegisterPage() {
             Create your account
           </h1>
           <p className="mt-2 text-sm text-[#111827] dark:text-slate-100">
-            Join the PolyMate academic community.
+            Access your academic resources with PolyMate.
           </p>
 
           <div className="mt-7 grid grid-cols-2 gap-3">

@@ -1,6 +1,5 @@
-﻿"use client";
+"use client";
 
-import NotificationBell from "@/components/notifications/NotificationBell";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 
 import AdminOverview from "./AdminOverview";
@@ -13,7 +12,6 @@ import {
   GraduationCap,
   Building2,
   FileText,
-  MessageSquare,
   Settings,
   LogOut,
   Menu,
@@ -57,12 +55,6 @@ const navigation = [
     name: "Study Materials",
     href: "/admin/materials",
     icon: FileText,
-    available: true,
-  },
-  {
-    name: "Community Management",
-    href: "/admin/community",
-    icon: MessageSquare,
     available: true,
   },
   {
@@ -301,7 +293,6 @@ export default function AdminDashboard() {
     </div>
 
     <ThemeToggle />
-    <NotificationBell role="admin" />
   </div>
 </header>
 
