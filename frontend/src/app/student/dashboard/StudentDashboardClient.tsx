@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { fetchSecurePDF, PDF_API_BASE } from "@/lib/secure-pdf";
 
@@ -6,6 +6,8 @@ import PDFViewer from "@/components/shared/PDFViewerDynamic";
 
 import Link from "next/link";
 import ThemeToggle from "@/components/theme/ThemeToggle";
+import NotificationBell from "@/components/notifications/NotificationBell";
+import { useCallback } from "react";
 import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   ArrowRight,
@@ -107,6 +109,7 @@ export default function StudentDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [refresh, setRefresh] = useState(0);
+  const handleNewPDF = useCallback(() => setRefresh(value => value + 1), []);
 
   const [preview, setPreview] =
     useState<Preview | null>(null);
@@ -266,6 +269,7 @@ export default function StudentDashboardPage() {
 
             <div className="flex shrink-0 items-center gap-2 sm:gap-3">
               <ThemeToggle />
+              <NotificationBell onOpenPDF={openPreview} onNewPDF={handleNewPDF} />
               <Link
               href="/student/profile"
               aria-label="Open My Profile"
@@ -608,4 +612,5 @@ export default function StudentDashboardPage() {
     </div>
   );
 }
+
 

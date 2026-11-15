@@ -1,4 +1,4 @@
-from routes.faculty_materials import faculty_materials_bp
+﻿from routes.faculty_materials import faculty_materials_bp
 from routes.student_materials import student_materials_bp
 
 import os
@@ -102,6 +102,9 @@ app.register_blueprint(role_dashboards_bp)
 
 app.register_blueprint(faculty_materials_bp)
 app.register_blueprint(student_materials_bp)
+
+from routes.notifications import notifications_bp
+app.register_blueprint(notifications_bp)
 from routes.student_bookmarks import student_bookmarks_bp
 app.register_blueprint(student_bookmarks_bp)
 
@@ -149,5 +152,6 @@ if __name__ == "__main__":
         port=5000,
         debug=False
     )
+
 
 
