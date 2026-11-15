@@ -1,5 +1,7 @@
 "use client";
 
+import FacultyNotificationBell from "@/components/notifications/FacultyNotificationBell";
+
 import { fetchSecurePDF, PDF_API_BASE } from "@/lib/secure-pdf";
 
 import PDFViewer from "@/components/shared/PDFViewerDynamic";
@@ -308,6 +310,7 @@ export default function FacultyDashboardPage() {
 
         <div className="flex shrink-0 items-center gap-3">
           <ThemeToggle />
+          <FacultyNotificationBell />
           {name && (
           <Link
             href="/faculty/profile"

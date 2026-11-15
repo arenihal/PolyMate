@@ -183,6 +183,19 @@ export default function FacultyMaterialsPage() {
     };
   }, [retry]);
 
+  const [reportedMaterialId, setReportedMaterialId] =
+    useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    setReportedMaterialId(
+      params.get("material") || ""
+    );
+  }, []);
+
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
 
@@ -199,9 +212,9 @@ export default function FacultyMaterialsPage() {
         `Semester ${material.semester}`,
       ].join(" ").toLowerCase();
 
-      return matchesType && text.includes(query);
+      return (!reportedMaterialId || material.id === reportedMaterialId) && matchesType && text.includes(query);
     });
-  }, [materials, search, filter]);
+  }, [materials, search, filter, reportedMaterialId]);
 
   function openManagement(
     action: MaterialAction,
@@ -275,6 +288,27 @@ export default function FacultyMaterialsPage() {
           Upload PDF
         </Link>
       </header>
+
+      {reportedMaterialId && (
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-700 dark:border-blue-800 dark:bg-blue-950/40 dark:text-blue-300">
+          <span>Showing the reported material.</span>
+
+          <button
+            type="button"
+            onClick={() => {
+              setReportedMaterialId("");
+              window.history.replaceState(
+                null,
+                "",
+                "/faculty/materials"
+              );
+            }}
+            className="font-semibold"
+          >
+            Show All
+          </button>
+        </div>
+      )}
 
       {/* Search and material type filters */}
       <section className="space-y-4">
