@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { fetchSecurePDF, PDF_API_BASE } from "@/lib/secure-pdf";
 
@@ -6,6 +6,8 @@ import PDFViewer from "@/components/shared/PDFViewerDynamic";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import FacultyNotificationBell from "@/components/notifications/FacultyNotificationBell";
+import { ClipboardList } from "lucide-react";
 import ThemeToggle from "@/components/theme/ThemeToggle";
 import { subscribeSmartSync } from "@/lib/smart-sync";
 import {
@@ -308,6 +310,7 @@ export default function FacultyDashboardPage() {
 
         <div className="flex shrink-0 items-center gap-3">
           <ThemeToggle />
+          <FacultyNotificationBell />
           {name && (
           <Link
             href="/faculty/profile"
@@ -490,6 +493,33 @@ export default function FacultyDashboardPage() {
               className="shrink-0 text-slate-400 group-hover:text-blue-600"
             />
           </Link>
+
+          <div className="mx-5 border-t border-slate-100 dark:border-slate-700" />
+
+          <Link
+            href="/faculty/community"
+            className="group flex items-center gap-4 p-5 hover:bg-slate-50 dark:hover:bg-slate-800"
+          >
+            <div className="flex h-13 w-13 shrink-0 items-center justify-center rounded-xl bg-blue-50 p-3 text-blue-600 dark:bg-blue-950 dark:text-blue-300">
+              <ClipboardList size={25} />
+            </div>
+
+            <div className="min-w-0 flex-1">
+              <h3 className="font-semibold">
+                Student Requests
+              </h3>
+
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Accept and fulfil requests forwarded by Admin
+              </p>
+            </div>
+
+            <ChevronRight
+              size={21}
+              className="shrink-0 text-slate-400 group-hover:text-blue-600"
+            />
+          </Link>
+
         </div>
       </section>
 
@@ -679,3 +709,4 @@ export default function FacultyDashboardPage() {
     </div>
   );
 }
+

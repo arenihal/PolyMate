@@ -1,10 +1,11 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   BookOpen,
+  ClipboardList,
   FileUp,
   Files,
   GraduationCap,
@@ -38,6 +39,11 @@ const navigation = [
     icon: Files,
   },
 
+  {
+    label: "Student Requests",
+    href: "/faculty/community",
+    icon: ClipboardList,
+  },
   {
     label: "My Profile",
     href: "/faculty/profile",
@@ -170,3 +176,4 @@ export default function FacultySidebar() {
     </>
   );
 }
+
