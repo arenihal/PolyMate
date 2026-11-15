@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -21,6 +21,7 @@ import {
 
 import { auth } from "@/lib/firebase";
 import { subscribeSmartSync } from "@/lib/smart-sync";
+import { subscribeToFacultyApprovals } from "@/lib/admin-realtime";
 
 const API =
   process.env.NEXT_PUBLIC_API_URL ??
@@ -91,8 +92,10 @@ function formatDate(value: string) {
 
 export default function AdminOverview({
   name,
+  onPendingChange,
 }: {
   name: string;
+  onPendingChange?: (count: number) => void;
 }) {
   const [analytics, setAnalytics] =
     useState<Analytics | null>(null);
@@ -104,6 +107,12 @@ export default function AdminOverview({
   const [error, setError] = useState("");
   const [healthError, setHealthError] = useState("");
   const [refresh, setRefresh] = useState(0);
+
+  useEffect(() => {
+    return subscribeToFacultyApprovals(() => {
+      setRefresh(value => value + 1);
+    });
+  }, []);
   const [period, setPeriod] = useState<7 | 30>(7);
 
   useEffect(() => {
@@ -190,6 +199,12 @@ export default function AdminOverview({
   }, [refresh]);
 
   const stats = analytics?.stats;
+
+  useEffect(() => {
+    if (stats) {
+      onPendingChange?.(stats.pending_faculty ?? 0);
+    }
+  }, [stats?.pending_faculty, onPendingChange]);
 
   const growth =
     analytics?.growth.slice(-period) || [];
@@ -776,3 +791,4 @@ export default function AdminOverview({
     </div>
   );
 }
+

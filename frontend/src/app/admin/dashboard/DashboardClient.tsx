@@ -1,4 +1,6 @@
-"use client";
+﻿"use client";
+
+import AdminNotificationBell from "@/components/notifications/AdminNotificationBell";
 
 import ThemeToggle from "@/components/theme/ThemeToggle";
 
@@ -73,6 +75,7 @@ export default function AdminDashboard() {
   const [name, setName] = useState("Administrator");
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(true);
+  const [pendingFaculty, setPendingFaculty] = useState(0);
   const [error, setError] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -293,6 +296,7 @@ export default function AdminDashboard() {
     </div>
 
     <ThemeToggle />
+            <AdminNotificationBell pending={pendingFaculty} />
   </div>
 </header>
 
@@ -313,7 +317,7 @@ export default function AdminDashboard() {
               Loading Admin Dashboard...
             </div>
           ) : !error ? (
-            <AdminOverview name={name} />
+            <AdminOverview name={name} onPendingChange={setPendingFaculty} />
           ) : null}
 
         </main>
@@ -321,6 +325,7 @@ export default function AdminDashboard() {
     </div>
   );
 }
+
 
 
 
