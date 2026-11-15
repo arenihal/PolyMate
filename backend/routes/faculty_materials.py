@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timezone
+from datetime import datetime, timezone
 from services.pdf_preview import secure_pdf_response
 import uuid
 from flask import Blueprint, request, jsonify, g
@@ -444,3 +444,146 @@ def delete_material(material_id):
         }), 503
 
 
+
+
+
+@faculty_materials_bp.get("/api/faculty/reports")
+@require_role("faculty")
+def list_faculty_reports():
+
+    try:
+        db = get_supabase()
+
+        result = (
+            db.table("material_reports")
+            .select(
+                "id,material_id,material_title,reason,details,"
+                "status,faculty_response,created_at,resolved_at,"
+                "faculty_read_at"
+            )
+            .eq("faculty_uid", g.firebase_uid)
+            .order("created_at", desc=True)
+            .limit(100)
+            .execute()
+        )
+
+        pending = (
+            db.table("material_reports")
+            .select("id", count="exact")
+            .eq("faculty_uid", g.firebase_uid)
+            .eq("status", "pending")
+            .limit(1)
+            .execute()
+        )
+
+        response = jsonify({
+            "reports": result.data or [],
+            "pending_count": pending.count or 0
+        })
+
+        response.headers["Cache-Control"] = "no-store"
+
+        return response
+
+    except Exception:
+        return jsonify({
+            "error": "Unable to load material reports"
+        }), 503
+
+
+@faculty_materials_bp.post(
+    "/api/faculty/reports/<uuid:report_id>/read"
+)
+@require_role("faculty")
+def mark_faculty_report_read(report_id):
+
+    try:
+        result = (
+            get_supabase()
+            .table("material_reports")
+            .update({
+                "faculty_read_at": datetime.now(
+                    timezone.utc
+                ).isoformat()
+            })
+            .eq("id", str(report_id))
+            .eq("faculty_uid", g.firebase_uid)
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "Report not found"
+            }), 404
+
+        return jsonify({"success": True})
+
+    except Exception:
+        return jsonify({
+            "error": "Unable to mark report as read"
+        }), 503
+
+
+@faculty_materials_bp.patch(
+    "/api/faculty/reports/<uuid:report_id>/resolve"
+)
+@require_role("faculty")
+def resolve_material_report(report_id):
+
+    body = request.get_json(silent=True)
+
+    if not isinstance(body, dict):
+        return jsonify({"error": "Invalid response"}), 400
+
+    reply = body.get("response", "")
+
+    if not isinstance(reply, str):
+        return jsonify({"error": "Invalid response"}), 400
+
+    reply = reply.strip()
+
+    if not reply:
+        return jsonify({
+            "error": "A response is required before resolving."
+        }), 400
+
+    if len(reply) > 2000:
+        return jsonify({
+            "error": "Response must be 2000 characters or fewer."
+        }), 400
+
+    try:
+        db = get_supabase()
+
+        timestamp = datetime.now(
+            timezone.utc
+        ).isoformat()
+
+        result = (
+            db.table("material_reports")
+            .update({
+                "status": "resolved",
+                "faculty_response": reply,
+                "resolved_at": timestamp,
+                "faculty_read_at": timestamp,
+                "student_read_at": None
+            })
+            .eq("id", str(report_id))
+            .eq("faculty_uid", g.firebase_uid)
+            .eq("status", "pending")
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "Report unavailable or already resolved."
+            }), 404
+
+        return jsonify({
+            "message": "Report resolved. Response saved for the student."
+        })
+
+    except Exception:
+        return jsonify({
+            "error": "Unable to resolve report"
+        }), 503

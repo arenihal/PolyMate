@@ -1,5 +1,7 @@
 "use client";
 
+import ReportMaterialButton from "@/components/student/ReportMaterialButton";
+
 import { fetchSecurePDF, PDF_API_BASE } from "@/lib/secure-pdf";
 
 import PDFViewer from "@/components/shared/PDFViewerDynamic";
@@ -8,6 +10,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   Bookmark,
+  Share2,
   FileText,
   Search,
   Eye,
@@ -533,6 +536,44 @@ export default function StudentMaterials({
     setPage(1);
   }
 
+  async function shareMaterial(material: Material) {
+    const url = new URL(
+      `/student/materials/${encodeURIComponent(material.id)}`,
+      window.location.origin
+    ).toString();
+
+    const shareData = {
+      title: material.title,
+      text: `${material.title} - PolyMate`,
+      url,
+    };
+
+    try {
+      if (
+        navigator.share &&
+        (!navigator.canShare || navigator.canShare(shareData))
+      ) {
+        await navigator.share(shareData);
+        return;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+        window.alert("Material link copied successfully.");
+        return;
+      }
+
+      window.prompt("Copy this protected material link:", url);
+
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        return;
+      }
+
+      window.prompt("Copy this protected material link:", url);
+    }
+  }
+
   async function openPDF(material: Material) {
     setOpening(material.id);
     setPreviewError("");
@@ -931,40 +972,7 @@ export default function StudentMaterials({
 
                       </div>
 
-                      <button
-                        type="button"
-                        disabled={!bookmarksReady || bookmarkBusy !== null}
-                        aria-label={
-                          bookmarkIds.has(material.id)
-                            ? "Remove bookmark"
-                            : "Save bookmark"
-                        }
-                        aria-pressed={bookmarkIds.has(material.id)}
-                        title={
-                          bookmarkIds.has(material.id)
-                            ? "Remove bookmark"
-                            : "Save bookmark"
-                        }
-                        onClick={() => void toggleBookmark(material)}
-                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border transition-colors disabled:opacity-50 ${
-                          bookmarkIds.has(material.id)
-                            ? "border-blue-200 bg-blue-50 text-blue-600 dark:border-blue-800 dark:bg-blue-950 dark:text-blue-300"
-                            : "border-slate-200 text-slate-400 hover:bg-blue-50 hover:text-blue-600 dark:border-[#30415D] dark:hover:bg-[#223553]"
-                        }`}
-                      >
-                        {bookmarkBusy === material.id ? (
-                          <Loader2 size={19} className="animate-spin" />
-                        ) : (
-                          <Bookmark
-                            size={19}
-                            fill={
-                              bookmarkIds.has(material.id)
-                                ? "currentColor"
-                                : "none"
-                            }
-                          />
-                        )}
-                      </button>
+                      
 
                     </div>
 
@@ -989,28 +997,77 @@ export default function StudentMaterials({
                     </div>
 
                     <div className="mt-auto pt-4">
+  <div className="grid grid-cols-4 gap-1 border-t border-slate-200 pt-3 dark:border-[#30415D]">
 
-                      <button
-                        type="button"
-                        disabled={opening !== null}
-                        onClick={() => void openPDF(material)}
-                        className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-700 hover:bg-blue-100 disabled:opacity-50 dark:bg-blue-950 dark:text-blue-300"
-                      >
+    {/* View PDF */}
+    <button
+      type="button"
+      disabled={opening !== null}
+      onClick={() => void openPDF(material)}
+      title="View PDF"
+      className="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl bg-blue-50 px-1 py-2 text-blue-700 transition-colors hover:bg-blue-100 disabled:opacity-50 dark:bg-blue-950 dark:text-blue-300"
+    >
+      {opening === material.id ? (
+        <Loader2 size={19} className="animate-spin" />
+      ) : (
+        <Eye size={19} />
+      )}
 
-                        {opening === material.id
-                          ? <Loader2
-                              size={18}
-                              className="animate-spin"
-                            />
-                          : <Eye size={18} />}
+      <span className="whitespace-nowrap text-[10px] font-semibold sm:text-[11px]">
+        {opening === material.id ? "Opening..." : "View PDF"}
+      </span>
+    </button>
 
-                        {opening === material.id
-                          ? "Opening..."
-                          : "View PDF"}
+    {/* Bookmark */}
+    <button
+      type="button"
+      disabled={!bookmarksReady || bookmarkBusy !== null}
+      aria-label={bookmarkIds.has(material.id) ? "Remove bookmark" : "Save bookmark"}
+      aria-pressed={bookmarkIds.has(material.id)}
+      title={bookmarkIds.has(material.id) ? "Remove bookmark" : "Save bookmark"}
+      onClick={() => void toggleBookmark(material)}
+      className={`flex min-h-14 min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl px-1 py-2 transition-colors disabled:opacity-50 ${
+        bookmarkIds.has(material.id)
+          ? "bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-300"
+          : "text-slate-500 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-[#223553]"
+      }`}
+    >
+      {bookmarkBusy === material.id ? (
+        <Loader2 size={19} className="animate-spin" />
+      ) : (
+        <Bookmark
+          size={19}
+          fill={bookmarkIds.has(material.id) ? "currentColor" : "none"}
+        />
+      )}
 
-                      </button>
+      <span className="whitespace-nowrap text-[10px] font-medium sm:text-[11px]">
+        {bookmarkIds.has(material.id) ? "Saved" : "Bookmark"}
+      </span>
+    </button>
 
-                    </div>
+    {/* Secure Share */}
+<button
+  type="button"
+  title="Share protected material link"
+  aria-label="Share material"
+  onClick={() => void shareMaterial(material)}
+  className="flex min-h-14 min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl px-1 py-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-[#223553] dark:hover:text-blue-300"
+>
+  <Share2 size={19} />
+  <span className="whitespace-nowrap text-[10px] font-medium sm:text-[11px]">
+    Share
+  </span>
+</button>
+
+    {/* Report PDF - enabled after report API setup */}
+    <ReportMaterialButton
+  materialId={material.id}
+  title={material.title}
+/>
+
+  </div>
+</div>
 
                   </article>
 

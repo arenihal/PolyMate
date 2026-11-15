@@ -1,5 +1,7 @@
 "use client";
 
+import { getPostLoginPath } from "@/lib/shared-material-redirect";
+
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -50,7 +52,12 @@ function LoginPageContent() {
   function redirectToDashboard(profile: Profile) {
 
 
-    router.replace(getDashboardPath(profile.user.role));
+    router.replace(
+      getPostLoginPath(
+        profile.user.role,
+        getDashboardPath(profile.user.role)
+      )
+    );
   }
 
   async function handleEmailLogin(event: FormEvent<HTMLFormElement>) {
@@ -102,7 +109,9 @@ function LoginPageContent() {
         return;
       }
 
-      router.replace("/student/dashboard");
+      router.replace(
+        getPostLoginPath("student", "/student/dashboard")
+      );
 
     } catch (err) {
 

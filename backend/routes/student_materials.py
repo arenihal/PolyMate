@@ -1,5 +1,5 @@
 from services.pdf_preview import secure_pdf_response
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 from middleware.role_auth import require_role
 from services.supabase_client import get_supabase
 
@@ -266,4 +266,221 @@ def material_subjects():
     except Exception:
         return jsonify({
             "error": "Unable to load subject options"
+        }), 503
+
+
+@student_materials_bp.get(
+    "/api/student/materials/<uuid:material_id>"
+)
+@require_role("student")
+def get_shared_material(material_id):
+    try:
+        result = (
+            get_supabase()
+            .table("study_materials")
+            .select(MATERIAL_FIELDS)
+            .eq("id", str(material_id))
+            .eq("status", "published")
+            .limit(1)
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "This material is unavailable or has been removed."
+            }), 404
+
+        response = jsonify({
+            "material": result.data[0]
+        })
+
+        response.headers["Cache-Control"] = "no-store"
+
+        return response
+
+    except Exception:
+        return jsonify({
+            "error": "Unable to load study material."
+        }), 503
+
+
+
+
+REPORT_REASONS = {
+    "Wrong PDF",
+    "Incorrect subject or semester",
+    "Incomplete notes",
+    "PDF not opening",
+    "Poor quality",
+    "Other",
+}
+
+
+@student_materials_bp.post(
+    "/api/student/materials/<uuid:material_id>/report"
+)
+@require_role("student")
+def submit_material_report(material_id):
+
+    body = request.get_json(silent=True)
+
+    if not isinstance(body, dict):
+        return jsonify({"error": "Invalid report data"}), 400
+
+    reason = body.get("reason", "")
+    details = body.get("details", "")
+
+    if not isinstance(reason, str) or not isinstance(details, str):
+        return jsonify({"error": "Invalid report details"}), 400
+
+    reason = reason.strip()
+    details = details.strip()
+
+    if reason not in REPORT_REASONS:
+        return jsonify({"error": "Select a valid report reason"}), 400
+
+    if len(details) > 1000:
+        return jsonify({
+            "error": "Details must be 1000 characters or fewer"
+        }), 400
+
+    try:
+        db = get_supabase()
+
+        result = (
+            db.table("study_materials")
+            .select("id,title,faculty_uid")
+            .eq("id", str(material_id))
+            .eq("status", "published")
+            .limit(1)
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "Material unavailable"
+            }), 404
+
+        material = result.data[0]
+
+        if not material.get("faculty_uid"):
+            return jsonify({
+                "error": "Uploading faculty unavailable"
+            }), 409
+
+        existing = (
+            db.table("material_reports")
+            .select("id")
+            .eq("material_id", str(material_id))
+            .eq("student_uid", g.firebase_uid)
+            .eq("status", "pending")
+            .limit(1)
+            .execute()
+        )
+
+        if existing.data:
+            return jsonify({
+                "error": "You already have a pending report for this material."
+            }), 409
+
+        saved = (
+            db.table("material_reports")
+            .insert({
+                "material_id": str(material_id),
+                "student_uid": g.firebase_uid,
+                "faculty_uid": material["faculty_uid"],
+                "material_title": material["title"],
+                "reason": reason,
+                "details": details,
+                "status": "pending"
+            })
+            .execute()
+        )
+
+        if not saved.data:
+            raise RuntimeError("Report insert failed")
+
+        return jsonify({
+            "message": "Report sent to the uploading faculty.",
+            "report_id": saved.data[0]["id"]
+        }), 201
+
+    except Exception as err:
+
+        if getattr(err, "code", None) == "23505":
+            return jsonify({
+                "error": "You already have a pending report for this material."
+            }), 409
+
+        return jsonify({
+            "error": "Unable to submit report"
+        }), 503
+
+
+@student_materials_bp.get("/api/student/reports")
+@require_role("student")
+def list_student_reports():
+
+    try:
+        result = (
+            get_supabase()
+            .table("material_reports")
+            .select(
+                "id,material_id,material_title,reason,details,"
+                "status,faculty_response,created_at,resolved_at,"
+                "student_read_at"
+            )
+            .eq("student_uid", g.firebase_uid)
+            .order("created_at", desc=True)
+            .limit(100)
+            .execute()
+        )
+
+        response = jsonify({
+            "reports": result.data or []
+        })
+
+        response.headers["Cache-Control"] = "no-store"
+
+        return response
+
+    except Exception:
+        return jsonify({
+            "error": "Unable to load reports"
+        }), 503
+
+
+@student_materials_bp.post(
+    "/api/student/reports/<uuid:report_id>/read"
+)
+@require_role("student")
+def mark_report_response_read(report_id):
+
+    from datetime import datetime, timezone
+
+    try:
+        result = (
+            get_supabase()
+            .table("material_reports")
+            .update({
+                "student_read_at": datetime.now(
+                    timezone.utc
+                ).isoformat()
+            })
+            .eq("id", str(report_id))
+            .eq("student_uid", g.firebase_uid)
+            .eq("status", "resolved")
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "Report response not found"
+            }), 404
+
+        return jsonify({"success": True})
+
+    except Exception:
+        return jsonify({
+            "error": "Unable to mark response as read"
         }), 503

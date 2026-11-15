@@ -1,4 +1,6 @@
-﻿"use client";
+"use client";
+
+import { getPostLoginPath } from "@/lib/shared-material-redirect";
 
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -75,7 +77,9 @@ export default function SessionRestore({
         }
 
         // Existing dashboard guards verify permissions.
-        router.replace(getDashboardPath(role));
+        router.replace(
+          getPostLoginPath(role, getDashboardPath(role))
+        );
 
       } catch (err) {
         if (!active) return;

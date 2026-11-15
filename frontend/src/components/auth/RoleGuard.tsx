@@ -1,5 +1,7 @@
 "use client";
 
+import { rememberSharedMaterial } from "@/lib/shared-material-redirect";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { subscribeSmartSync } from "@/lib/smart-sync";
@@ -43,6 +45,7 @@ export default function RoleGuard({
 
         if (!user) {
           setAuthorized(false);
+          rememberSharedMaterial(window.location.pathname);
           router.replace("/login");
           return;
         }
@@ -68,7 +71,8 @@ export default function RoleGuard({
 
           if (!user.emailVerified) {
             setAuthorized(false);
-            router.replace("/login");
+            rememberSharedMaterial(window.location.pathname);
+          router.replace("/login");
             return;
           }
 
