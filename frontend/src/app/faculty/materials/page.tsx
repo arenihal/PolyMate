@@ -523,7 +523,7 @@ export default function FacultyMaterialsPage() {
                     </p>
 
                     <p className="mt-1 text-xs text-slate-500">
-                      {material.branch} Â· Semester {material.semester}
+                      {material.branch}  -  Semester {material.semester}
                     </p>
 
                     <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-400">
