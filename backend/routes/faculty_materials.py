@@ -447,6 +447,167 @@ def delete_material(material_id):
 
 
 
+
+
+# ============================================================
+# FACULTY TRASH
+# ============================================================
+
+@faculty_materials_bp.get("/api/faculty/materials/trash")
+@require_role("faculty")
+def list_trashed_faculty_materials():
+    from flask import current_app
+
+    try:
+        result = (
+            get_supabase()
+            .table("study_materials")
+            .select(
+                "id,title,branch,semester,subject_name,"
+                "material_type,created_at,deleted_at"
+            )
+            .eq("faculty_uid", g.firebase_uid)
+            .eq("status", "trash")
+            .order("deleted_at", desc=True)
+            .execute()
+        )
+
+        response = jsonify({
+            "materials": result.data or []
+        })
+        response.headers["Cache-Control"] = "no-store"
+        return response, 200
+
+    except Exception:
+        current_app.logger.exception(
+            "Unable to load faculty trash"
+        )
+        return jsonify({
+            "error": "Unable to load Trash"
+        }), 503
+
+
+@faculty_materials_bp.get(
+    "/api/faculty/materials/<uuid:material_id>/trash/preview"
+)
+@require_role("faculty")
+def preview_trashed_faculty_material(material_id):
+    from flask import current_app
+
+    try:
+        result = (
+            get_supabase()
+            .table("study_materials")
+            .select("id,title,storage_path")
+            .eq("id", str(material_id))
+            .eq("faculty_uid", g.firebase_uid)
+            .eq("status", "trash")
+            .limit(1)
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "Trashed material not found"
+            }), 404
+
+        material = result.data[0]
+
+        if not material.get("storage_path"):
+            return jsonify({
+                "error": "PDF storage path missing"
+            }), 404
+
+        return secure_pdf_response(
+            get_supabase(),
+            BUCKET,
+            material
+        )
+
+    except Exception:
+        current_app.logger.exception(
+            "Unable to preview trashed material"
+        )
+        return jsonify({
+            "error": "Unable to preview PDF"
+        }), 503
+
+
+@faculty_materials_bp.patch(
+    "/api/faculty/materials/<uuid:material_id>/restore"
+)
+@require_role("faculty")
+def restore_trashed_faculty_material(material_id):
+    from flask import current_app
+
+    try:
+        db = get_supabase()
+
+        result = (
+            db.table("study_materials")
+            .select("id,status,storage_path")
+            .eq("id", str(material_id))
+            .eq("faculty_uid", g.firebase_uid)
+            .eq("status", "trash")
+            .limit(1)
+            .execute()
+        )
+
+        if not result.data:
+            return jsonify({
+                "error": "Trashed material not found"
+            }), 404
+
+        material = result.data[0]
+
+        # Check that the PDF still exists before restoring.
+        pdf_bytes = db.storage.from_(BUCKET).download(
+            material["storage_path"]
+        )
+
+        if not pdf_bytes or not pdf_bytes.startswith(b"%PDF-"):
+            return jsonify({
+                "error": "Stored PDF is missing or invalid"
+            }), 409
+
+        timestamp = datetime.now(
+            timezone.utc
+        ).isoformat()
+
+        updated = (
+            db.table("study_materials")
+            .update({
+                "status": "published",
+                "deleted_at": None,
+                "deleted_by": None,
+                "updated_at": timestamp
+            })
+            .eq("id", str(material_id))
+            .eq("faculty_uid", g.firebase_uid)
+            .eq("status", "trash")
+            .execute()
+        )
+
+        if not updated.data:
+            return jsonify({
+                "error": "Material changed. Please try again."
+            }), 409
+
+        return jsonify({
+            "message": "Material restored successfully",
+            "material_id": str(material_id),
+            "status": "published"
+        }), 200
+
+    except Exception:
+        current_app.logger.exception(
+            "Unable to restore faculty material"
+        )
+
+        return jsonify({
+            "error": "Unable to restore material"
+        }), 503
+
 @faculty_materials_bp.get("/api/faculty/reports")
 @require_role("faculty")
 def list_faculty_reports():

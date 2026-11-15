@@ -280,6 +280,15 @@ export default function FacultyMaterialsPage() {
           </p>
         </div>
 
+        <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/faculty/trash"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+          >
+            <Trash2 size={18} />
+            Trash
+          </Link>
+
         <Link
           href="/faculty/upload"
           className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700"
@@ -287,6 +296,7 @@ export default function FacultyMaterialsPage() {
           <Plus size={18} />
           Upload PDF
         </Link>
+        </div>
       </header>
 
       {reportedMaterialId && (
@@ -513,7 +523,7 @@ export default function FacultyMaterialsPage() {
                     </p>
 
                     <p className="mt-1 text-xs text-slate-500">
-                      {material.branch} · Semester {material.semester}
+                      {material.branch} Â· Semester {material.semester}
                     </p>
 
                     <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-400">
