@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useSmartRefresh } from "@/hooks/useSmartRefresh";
 import Link from "next/link";
+import ForwardFaculty from "@/components/admin/ForwardFaculty";
 import { getAuth } from "firebase/auth";
 
 import "@/lib/firebase";
@@ -1230,7 +1231,7 @@ export default function AdminCommunityPage() {
 
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {categoryLabels[item.category]}
-                  {" · "}
+                  {" Â· "}
                   {dateLabel(item.created_at)}
                 </p>
 
@@ -1306,9 +1307,9 @@ export default function AdminCommunityPage() {
 
                 <p className="text-xs text-slate-500">
                   {ticket.ticket_number}
-                  {" · "}
+                  {" Â· "}
                   {categoryLabels[ticket.category]}
-                  {" · "}
+                  {" Â· "}
                   {dateLabel(ticket.created_at)}
                 </p>
 
@@ -1369,12 +1370,12 @@ export default function AdminCommunityPage() {
                     </p>
 
                     <p className="mt-2">
-                      {ticket.branch} · Semester {ticket.semester}
+                      {ticket.branch} Â· Semester {ticket.semester}
                     </p>
 
                     <p className="mt-1">
                       {ticket.subject_name}
-                      {" · "}
+                      {" Â· "}
                       {ticket.material_type}
                     </p>
 
@@ -1382,7 +1383,21 @@ export default function AdminCommunityPage() {
 
                 )}
 
-                {ticket.status === "pending" && (
+                {ticket.category === "materials" &&
+                  ["pending", "in_progress"].includes(ticket.status) && (
+
+                    <ForwardFaculty
+                      key={ticket.id}
+                      requestId={ticket.id}
+                      branch={ticket.branch}
+                      onForwarded={() => {
+                        void loadDetail(ticket.id);
+                      }}
+                    />
+
+                )}
+
+{ticket.status === "pending" && (
 
                   <button
                     type="button"
@@ -1516,7 +1531,7 @@ export default function AdminCommunityPage() {
 
                         <p className="mt-3 text-xs text-emerald-700 dark:text-emerald-300">
 
-                          PolyMate Support · {dateLabel(item.created_at)}
+                          PolyMate Support Â· {dateLabel(item.created_at)}
 
                         </p>
 
@@ -1786,3 +1801,4 @@ export default function AdminCommunityPage() {
   );
 
 }
+

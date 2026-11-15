@@ -177,6 +177,9 @@ from routes.system_settings import system_settings_bp
 
 app.register_blueprint(system_settings_bp)
 
+from routes.faculty_community import faculty_community_bp
+app.register_blueprint(faculty_community_bp)
+
 from middleware.security import init_security
 
 init_security(app)
@@ -188,4 +191,5 @@ if __name__ == "__main__":
         port=5000,
         debug=False
     )
+
 
