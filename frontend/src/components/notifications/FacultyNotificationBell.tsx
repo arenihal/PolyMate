@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Bell, Flag, X, CheckCircle2 } from "lucide-react";
@@ -63,6 +63,7 @@ export default function FacultyNotificationBell() {
   const [selected, setSelected] = useState<Report | null>(null);
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
+  const [fixConfirmed, setFixConfirmed] = useState(false);
   const [error, setError] = useState("");
 
   async function loadReports() {
@@ -168,6 +169,7 @@ export default function FacultyNotificationBell() {
 
   async function openReport(report: Report) {
     setSelected(report);
+    setFixConfirmed(false);
     setReply(report.faculty_response || "");
     setError("");
     setOpen(false);
@@ -185,7 +187,7 @@ export default function FacultyNotificationBell() {
   }
 
   async function resolveReport() {
-    if (!selected || !reply.trim() || busy) return;
+    if (!selected || !reply.trim() || !fixConfirmed || busy) return;
 
     setBusy(true);
     setError("");
@@ -400,10 +402,28 @@ export default function FacultyNotificationBell() {
                 </p>
               )}
 
+              {selected.status === "pending" && (
+                <label className="flex items-start gap-3 rounded-xl border border-slate-200 p-3 text-sm dark:border-slate-700">
+                  <input
+                    type="checkbox"
+                    checked={fixConfirmed}
+                    disabled={busy}
+                    onChange={(event) =>
+                      setFixConfirmed(event.target.checked)
+                    }
+                    className="mt-1"
+                  />
+                  <span>
+                    I have reviewed this report and confirmed
+                    that the reported issue has been addressed.
+                  </span>
+                </label>
+              )}
+
               {selected.status === "pending" ? (
                 <button
                   type="button"
-                  disabled={busy || !reply.trim()}
+                  disabled={busy || !reply.trim() || !fixConfirmed}
                   onClick={() => void resolveReport()}
                   className="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50"
                 >
