@@ -1,4 +1,4 @@
-﻿from routes.faculty_materials import faculty_materials_bp
+from routes.faculty_materials import faculty_materials_bp
 from routes.student_materials import student_materials_bp
 
 import os
@@ -43,7 +43,7 @@ except ValueError:
         credentials.Certificate(firebase_credentials_path)
     )
 
-from institutions_api import institutions_bp
+from routes.institutions import institutions_bp
 app = Flask(__name__)
 
 app.register_blueprint(institutions_bp)

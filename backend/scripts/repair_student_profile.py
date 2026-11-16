@@ -1,11 +1,19 @@
-﻿from app import app
+import sys
+from pathlib import Path
+
+sys.path.insert(
+    0,
+    str(Path(__file__).resolve().parents[1])
+)
+
+from app import app
 from firebase_admin import auth
 from services.supabase_client import get_supabase
 
 with app.app_context():
 
-    email = "lalithalalitha73596@gmail.com"
-    full_name = "Are Nehal"
+    email = input("Enter student email: ").strip()
+    full_name = input("Enter full name: ").strip()
 
     user = auth.get_user_by_email(email)
 
