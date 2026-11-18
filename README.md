@@ -9,7 +9,7 @@
 ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white)
 
 **[Live Website](https://polymate-frontend.vercel.app/)** |
-**[GitHub Repository](https://github.com/nehalare14-glitch/PolyMate)**
+**[GitHub Repository](https://github.com/arenihal/PolyMate)**
 
 ## Overview
 
@@ -79,4 +79,52 @@ PolyMate/
 ├── backend/
 ├── database/
 └── README.md
+```
 
+## Getting Started
+
+### Requirements
+
+- Node.js and npm
+- Python
+- Firebase configuration
+- Supabase configuration
+
+### Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### Backend Setup
+
+```bash
+cd backend
+pip install -r requirements.txt
+python app.py
+```
+
+Configure environment variables before running the application.
+
+## Deployment
+
+Frontend: https://polymate-frontend.vercel.app/
+
+Backend: https://polymate-1.onrender.com/api/health
+
+## Security
+
+- Firebase Admin SDK verifies authentication tokens.
+- Protected endpoints require authorization.
+- PDF previews use authenticated backend routes.
+- Never commit service-account credentials or private keys.
+
+## Project Status
+
+Under active development.
+
+---
+
+Developed as an educational software project.
