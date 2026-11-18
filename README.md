@@ -1,63 +1,82 @@
-﻿# PolyMate
+# PolyMate — Polytechnic Learning Platform
 
-PolyMate is an educational platform for Telangana diploma and polytechnic students and faculty.
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)
+![React](https://img.shields.io/badge/React-149ECA?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?logo=flask)
+![Firebase](https://img.shields.io/badge/Firebase-DD2C00?logo=firebase&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?logo=supabase&logoColor=white)
+
+**[Live Website](https://polymate-frontend.vercel.app/)** |
+**[GitHub Repository](https://github.com/nehalare14-glitch/PolyMate)**
+
+## Overview
+
+PolyMate is an educational web application developed for Telangana diploma and polytechnic students and faculty.
+
+It provides centralized access to notes, question papers, syllabuses, and laboratory manuals.
 
 ## Features
 
-- Student and faculty registration and authentication
-- Google Sign-In and email verification
-- Student and faculty dashboards
-- Browse notes, question papers and study materials
-- PDF upload, preview, edit and delete
-- Student bookmarks
-- Faculty approval and management
-- Admin and super-admin dashboards
+### Student Features
+
+- Student registration and secure login
+- Firebase Authentication and email verification
+- Supported Google Sign-In
+- Student dashboard
+- Browse academic study materials
+- Filter by branch, semester, subject, and material type
+- Secure PDF preview
+- Bookmark study materials
+- Report issues with uploaded PDFs
+- Student profile management
+
+### Faculty Features
+
+- Faculty registration and authentication
+- Faculty dashboard
+- Upload PDF study materials
+- View and manage uploaded materials
+- Edit material information
+- Preview uploaded PDFs
+- Receive and resolve student material reports
+- Replace reported PDFs
+- Move materials to Trash
+- Restore or permanently delete trashed materials
+- Faculty profile management
+
+### Additional Features
+
 - Telangana polytechnic institution directory
 - Light and dark mode
+- Responsive user interface
+- Progressive Web App support
+- REST API integration
 
 ## Technology Stack
 
-### Frontend
-- Next.js 16
-- React
-- TypeScript
-- Tailwind CSS
-- Lucide React
-
-### Backend
-- Python Flask
-- Gunicorn
-- REST APIs
-
-### Database and Storage
-- Supabase PostgreSQL
-- Supabase Storage
-
-### Authentication
-- Firebase Authentication
-- Firebase Admin SDK
-
-### Deployment
-- Frontend: Vercel
-- Backend: Render
-- Version Control: GitHub
+| Component | Technology |
+|---|---|
+| Frontend | Next.js 16, React, TypeScript |
+| Styling | Tailwind CSS |
+| Icons | Lucide React |
+| Backend | Python Flask |
+| Production Server | Gunicorn |
+| Database | Supabase PostgreSQL |
+| Storage | Supabase Storage |
+| Authentication | Firebase Authentication |
+| Token Verification | Firebase Admin SDK |
+| Frontend Hosting | Vercel |
+| Backend Hosting | Render |
+| Version Control | Git and GitHub |
 
 ## Project Structure
 
-- frontend/ - Next.js web application
-- backend/ - Python Flask API
+```text
+PolyMate/
+├── frontend/
+├── backend/
+├── database/
+└── README.md
 
-## Development
-
-Frontend:
-npm install
-npm run dev
-
-Backend:
-pip install -r requirements.txt
-python app.py
-
-## Security
-
-Environment variables and Firebase service account credentials
-must be configured securely and must not be committed to GitHub.
