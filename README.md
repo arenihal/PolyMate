@@ -17,6 +17,36 @@ PolyMate is an educational web application developed for Telangana diploma and p
 
 It provides centralized access to notes, question papers, syllabuses, and laboratory manuals.
 
+## Application Screenshots
+
+### Landing Page
+![PolyMate Landing Page](docs/screenshots/01-landing-page.png)
+
+### Login Page
+![PolyMate Login Page](docs/screenshots/03-login-page.png)
+
+### Student Dashboard
+![Student Dashboard](docs/screenshots/02-student-dashboard.png)
+
+### Student Subject Notes
+![Student Subject Notes](docs/screenshots/04-student-subject-notes.png)
+
+### Secure PDF Preview
+![Secure PDF Preview](docs/screenshots/05-secure-pdf-preview.png)
+
+### Faculty Dashboard
+![Faculty Dashboard](docs/screenshots/06-faculty-dashboard.png)
+
+### Faculty PDF Upload
+![Faculty PDF Upload](docs/screenshots/07-faculty-pdf-upload.png)
+
+### Faculty Materials Management
+![Faculty Materials Management](docs/screenshots/08-faculty-materials.png)
+
+### Faculty Management Demonstration
+This screenshot shows the faculty-management interface used for project demonstration; it is not presented as a live student/faculty role.
+![Faculty Management Demonstration](docs/screenshots/09-faculty-management-demo.png)
+
 ## Features
 
 ### Student Features
